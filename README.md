@@ -20,7 +20,7 @@ Blocchy is a distraction-free, gorgeous dark-themed notepad that provides the pe
 
 ## 🚀 Getting Started
 
-If you are busy you cab download the simple setup in the release page.
+If you are busy you can download the simple setup in the release page.
 
 Or you can do this:↙
 ### Prerequisites
