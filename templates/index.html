@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocchy</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="font-inter">
+
+    <div class="container">
+        <nav class="main-nav">
+            <div class="nav-group">
+                <button class="nav-button active" id="nav-files-btn" title="Mostra file (Ctrl+E)"><i data-feather="file-text"></i></button>
+                <button class="nav-button" id="nav-graph-btn" title="Mostra grafo (Ctrl+G)"><i data-feather="git-merge"></i></button>
+            </div>
+            <div class="nav-group">
+                 <button class="nav-button" id="nav-settings-btn" title="Impostazioni"><i data-feather="settings"></i></button>
+            </div>
+        </nav>
+
+        <aside class="sidebar" id="sidebar">
+            <div id="files-view" class="sidebar-view active">
+                <header class="sidebar-header">
+                    <h3>🗂️ Esplora</h3>
+                    <button class="icon-button" id="new-note-btn" title="Nuova nota (Ctrl+N)"><i data-feather="plus"></i></button>
+                </header>
+                <div id="notes-list" class="notes-list"></div>
+            </div>
+            <div id="graph-view" class="sidebar-view">
+                 <header class="sidebar-header"><h3>🕸️ Grafo</h3></header>
+                <div id="graph-container"></div>
+            </div>
+             <div id="settings-view" class="sidebar-view">
+                <header class="sidebar-header"><h3>⚙️ Impostazioni</h3></header>
+                <div class="settings-content">
+                    <h4>Font Editor</h4>
+                    <select id="font-selector">
+                        <option value="inter">Inter (Default)</option>
+                        <option value="source-code-pro">Source Code Pro</option>
+                        <option value="roboto-mono">Roboto Mono</option>
+                    </select>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div id="welcome-screen" class="welcome-screen">
+                <i data-feather="edit-3" class="welcome-icon"></i>
+                <h1>Benvenuto in Blocchy</h1>
+                <p>Crea una nuova nota (Ctrl+N) o aprine una esistente (Ctrl+P)</p>
+            </div>
+
+            <div id="editor-area" class="editor-area hidden">
+                <header class="editor-header">
+                    <input type="text" id="note-title" placeholder="NomeDelFile" disabled>
+                    <div class="editor-actions">
+                        <span id="save-status" class="save-status">Salvato</span>
+                        <button class="icon-button" id="delete-btn" title="Elimina nota"><i data-feather="trash-2"></i></button>
+                    </div>
+                </header>
+                <div class="editor-toolbar">
+                    <button class="toolbar-button" data-command="bold" title="Grassetto (Ctrl+B)"><i data-feather="bold"></i></button>
+                    <button class="toolbar-button" data-command="italic" title="Corsivo (Ctrl+I)"><i data-feather="italic"></i></button>
+                    <button class="toolbar-button" data-command="link" title="Inserisci link (Ctrl+K)"><i data-feather="link"></i></button>
+                    <button class="toolbar-button" data-command="unordered-list" title="Lista puntata"><i data-feather="list"></i></button>
+                    <button class="toolbar-button" data-command="ordered-list" title="Lista numerata"><i data-feather="hash"></i></button>
+                    <button class="toolbar-button" id="toggle-preview-btn" title="Attiva/Disattiva Anteprima"><i data-feather="eye"></i></button>
+                </div>
+                <div id="editor-container" class="editor-container">
+                    <textarea id="editor" spellcheck="false"></textarea>
+                    <div id="preview" class="markdown-body"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="command-palette-overlay" class="command-palette-overlay hidden">
+        <div id="command-palette" class="command-palette">
+            <div class="palette-input-container">
+                <i data-feather="search"></i>
+                <input type="text" id="palette-input" placeholder="Cerca o apri un file...">
+            </div>
+            <ul id="palette-results"></ul>
+        </div>
+    </div>
+    
+    <div id="delete-confirm-overlay" class="command-palette-overlay hidden">
+        <div id="delete-confirm-dialog" class="command-palette">
+            <div class="dialog-content">
+                <i data-feather="trash-2"></i>
+                <h3>Conferma Eliminazione</h3>
+                <p id="delete-confirm-message"></p>
+                <div class="dialog-actions">
+                    <button id="delete-confirm-btn" class="dialog-button-confirm">Elimina</button>
+                    <button id="delete-cancel-btn" class="dialog-button-cancel">Annulla</button>
+                </div>
+                <small>Premi Invio per confermare o Esc per annullare.</small>
+            </div>
+        </div>
+    </div>
+
+    <div id="link-modal-overlay" class="command-palette-overlay hidden">
+        <div id="link-modal" class="command-palette">
+            <div class="dialog-content">
+                <i data-feather="link"></i>
+                <h3>Inserisci Link</h3>
+                <div class="form-group">
+                    <label for="link-text-input">Testo da Visualizzare</label>
+                    <input type="text" id="link-text-input" placeholder="Testo del link">
+                </div>
+                <div class="form-group">
+                    <label for="link-url-input">URL</label>
+                    <input type="text" id="link-url-input" placeholder="https://esempio.com">
+                </div>
+                <div class="dialog-actions">
+                    <button id="link-confirm-btn" class="dialog-button-confirm">Inserisci</button>
+                    <button id="link-cancel-btn" class="dialog-button-cancel">Annulla</button>
+                </div>
+                 <small>Premi Invio per confermare o Esc per annullare.</small>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
